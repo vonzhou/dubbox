@@ -19,11 +19,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.alibaba.dubbo.demo.bid.*;
+import com.alibaba.dubbo.demo.hello.HelloService;
 import com.alibaba.dubbo.demo.user.User;
 import com.alibaba.dubbo.demo.user.facade.AnotherUserRestService;
 import com.alibaba.dubbo.rpc.RpcContext;
+import com.alibaba.dubbo.rpc.service.EchoService;
 
 public class DemoAction {
+
+    private HelloService helloService;
 
     private BidService bidService;
 
@@ -37,7 +41,18 @@ public class DemoAction {
         this.anotherUserRestService = anotherUserRestService;
     }
 
+    public void setHelloService(HelloService helloService) {
+        this.helloService = helloService;
+    }
+
     public void start() throws Exception {
+//        docDigest();
+
+        RpcContext.getContext().setAttachment("index", "1"); // 隐式传参，后面的远程调用都会隐式将这些参数发送到服务器端，类似cookie，用于框架集成，不建议常规业务使用
+        helloService.hello("vonzhou");
+
+
+        // ----- 以下原有代码   --------
         BidRequest request = new BidRequest();
 
         Impression imp = new Impression();
@@ -70,6 +85,11 @@ public class DemoAction {
 //        }
 
 //        System.out.println(">>>>> Total time consumed:" + (System.currentTimeMillis() - start));
+        boolean isConsumerSide = RpcContext.getContext().isConsumerSide(); // 本端是否为消费端，这里会返回true
+        String serverIP = RpcContext.getContext().getRemoteHost(); // 获取最后一次调用的提供方IP地址
+        String application = RpcContext.getContext().getUrl().getParameter("application"); // 获取当前服务配置信息，所有配置信息都将转换为URL的参数
+        System.out.println(String.format("%s, %s , %s", isConsumerSide, serverIP, application));
+        // ...
 
         try {
             bidService.throwNPE();
@@ -84,6 +104,13 @@ public class DemoAction {
         RpcContext.getContext().setAttachment("clientName", "demo");
         RpcContext.getContext().setAttachment("clientImpl", "dubbox");
         System.out.println("SUCCESS: got user " + anotherUserRestService.getUser(1L));
+    }
+
+    // 阅读文档过程写的
+    public void docDigest() {
+        EchoService echoService = (EchoService) bidService;
+        System.out.println(echoService.$echo("OK"));
+
     }
 
 }

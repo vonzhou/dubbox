@@ -21,6 +21,7 @@
 	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
     <bean class="com.alibaba.dubbo.demo.consumer.DemoAction" init-method="start">
+		<property name="helloService" ref="helloService" />
 		<property name="bidService" ref="bidService" />
 		<property name="anotherUserRestService" ref="anotherUserRestService" />
 	</bean>
