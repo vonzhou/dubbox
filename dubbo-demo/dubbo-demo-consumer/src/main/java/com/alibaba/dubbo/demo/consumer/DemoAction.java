@@ -79,10 +79,10 @@ public class DemoAction {
 
 //        long start = System.currentTimeMillis();
 
-//        for (int i = 0; i < 10000; i ++) {
-//        System.out.println(bidService.bid(request).getId());
-        System.out.println("SUCCESS: got bid response id: " + bidService.bid(request).getId());
-//        }
+        for (int i = 0; i < 10000; i++) {
+            System.out.println(bidService.bid(request).getId());
+            System.out.println("SUCCESS: got bid response id: " + bidService.bid(request).getId());
+        }
 
 //        System.out.println(">>>>> Total time consumed:" + (System.currentTimeMillis() - start));
         boolean isConsumerSide = RpcContext.getContext().isConsumerSide(); // 本端是否为消费端，这里会返回true
